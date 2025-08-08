@@ -1,0 +1,21 @@
+:root{
+  --u: 36;           /* 1グリッド = 36px */
+  --gap: 2;          /* セルの内側余白 */
+  --bg: #0b0f18;     /* 背景 */
+  --ink: #e9edf4;    /* 文字色 */
+  --grid: #1d2536;   /* セル罫線 */
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:14px/1.45 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
+  display:grid; place-items:center;
+}
+.wrap{width:min(1100px,96vw)}
+.bar{display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; margin:.75rem 0}
+.stage{position:relative; width:100%; aspect-ratio: 11/13; background:#0f1421; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.45) inset, 0 10px 24px rgba(0,0,0,.25)}
+svg{width:100%; height:100%; display:block}
+.tip{position:absolute; pointer-events:none; padding:6px 8px; background:#1b2232; border:1px solid #273149; border-radius:8px; font-size:12px; opacity:0; transition:opacity .12s ease}
+.muted{opacity:.75}
+.cell-label{font:600 12px ui-monospace,SFMono-Regular,Consolas,monospace}

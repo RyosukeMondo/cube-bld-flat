@@ -1,0 +1,28 @@
+<!-- Path: /rubik-mercator/index.html -->
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rubik Mercator Grid – 11×13 定義&優先度アルゴリズム</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <strong>11×13 グリッド定義 → 外周優先（あと勝ち）→ 描画</strong>
+      <span class="muted">A–X（大/小）+ 6センター = 54定義を想定。座標は (x1,y1)-(x2,y2)。</span>
+    </div>
+    <div class="stage">
+      <div class="scene">
+        <div class="camera">
+          <div class="world" id="world" aria-label="rubik-mercator-grid"></div>
+        </div>
+      </div>
+      <div class="tip" id="tip"></div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+  </body>
+  </html>

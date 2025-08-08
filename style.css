@@ -1,0 +1,30 @@
+:root{
+  --u: 36px;         /* 1グリッド = 36px */
+  --z: 12px;         /* 1Z単位（高さ） */
+  --gap: 2;          /* セルの内側余白 */
+  --bg: #0b0f18;     /* 背景 */
+  --ink: #e9edf4;    /* 文字色 */
+  --grid: #1d2536;   /* セル罫線 */
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:14px/1.45 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
+  display:grid; place-items:center;
+}
+.wrap{width:min(1100px,96vw)}
+.bar{display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; margin:.75rem 0}
+.stage{position:relative; width:100%; aspect-ratio: 11/13; background:#0f1421; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.45) inset, 0 10px 24px rgba(0,0,0,.25)}
+.scene{position:absolute; inset:0; display:block;}
+.camera{position:absolute; inset:0; perspective: 900px;}
+.world{position:absolute; left:50%; top:50%; transform-style: preserve-3d; transform: translate3d(-50%,-50%,0) rotateX(18deg) rotateY(-22deg);}
+.cell{position:absolute; border-radius:4px; border:1px solid #1b2539; box-shadow:0 2px 3px rgba(0,0,0,.15); transform-style: preserve-3d;}
+.cell .label{position:absolute; left:50%; top:50%; transform: translate(-50%,-50%); font:600 12px ui-monospace,SFMono-Regular,Consolas,monospace; color:#0d1117}
+.tip{position:absolute; pointer-events:none; padding:6px 8px; background:#1b2232; border:1px solid #273149; border-radius:8px; font-size:12px; opacity:0; transition:opacity .12s ease}
+.muted{opacity:.75}
+.cell-label{font:600 12px ui-monospace,SFMono-Regular,Consolas,monospace}
+
+/* drag cursors */
+.dragging{cursor:grabbing !important}
+.draggable{cursor:grab}
