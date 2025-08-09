@@ -145,14 +145,15 @@ world.style.height = (GRID_H * U) + 'px';
 
 // 3D 回転（ドラッグで操作）
 let rotX = 18, rotY = -22; // 初期角度（CSS 初期値と合わせる）
+let zoomZ = 0;             // カメラ方向へのズーム距離（px）
 let isDragging = false, lastX = 0, lastY = 0;
 const scene = document.querySelector('.scene');
 const camera = document.querySelector('.camera');
 
-function applyRotation(){
-  world.style.transform = `translate3d(-50%,-50%,0) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+function applyTransform(){
+  world.style.transform = `translate3d(-50%,-50%,${zoomZ}px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
 }
-applyRotation();
+applyTransform();
 
 function onPointerDown(e){
   isDragging = true;
@@ -170,7 +171,7 @@ function onPointerMove(e){
   rotX -= dy * 0.3; // 縦ドラッグで X 回転
   rotX = Math.max(-89, Math.min(89, rotX)); // 上下に回りすぎ防止
   lastX = x; lastY = y;
-  applyRotation();
+  applyTransform();
 }
 function onPointerUp(){ isDragging = false; scene.classList.remove('dragging'); }
 
@@ -180,6 +181,18 @@ window.addEventListener('mouseup', onPointerUp);
 scene.addEventListener('touchstart', onPointerDown, {passive:true});
 scene.addEventListener('touchmove', onPointerMove, {passive:true});
 window.addEventListener('touchend', onPointerUp);
+
+// マウスホイールでズーム
+function onWheel(e){
+  e.preventDefault();
+  const sensitivity = 0.6; // 値を大きくするとズーム速度が上がる
+  // 通常: 下回し(deltaY>0)で遠ざかる、上回しで近づく
+  zoomZ -= e.deltaY * sensitivity;
+  // 過度なズームを防止
+  zoomZ = Math.max(-900, Math.min(900, zoomZ));
+  applyTransform();
+}
+scene.addEventListener('wheel', onWheel, { passive:false });
 
 function render(result){
   const { defs } = result;
