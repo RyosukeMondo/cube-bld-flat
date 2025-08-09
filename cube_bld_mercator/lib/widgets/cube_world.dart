@@ -92,7 +92,12 @@ class _WorldContent extends StatelessWidget {
           for (final d in controller.defsRef)
             _CellBox(
               def: d,
+              highlightA: controller.selectedA == d,
+              highlightB: controller.selectedB == d,
+              lockedA: controller.selectedA == d ? controller.lockA : false,
+              lockedB: controller.selectedB == d ? controller.lockB : false,
               onTap: () => controller.select(d),
+              onDoubleTap: () => controller.toggleLockFor(d),
             ),
         ]),
       ),
@@ -102,8 +107,13 @@ class _WorldContent extends StatelessWidget {
 
 class _CellBox extends StatelessWidget {
   final CellDef def;
+  final bool highlightA;
+  final bool highlightB;
+  final bool lockedA;
+  final bool lockedB;
   final VoidCallback onTap;
-  const _CellBox({required this.def, required this.onTap});
+  final VoidCallback onDoubleTap;
+  const _CellBox({required this.def, required this.onTap, required this.onDoubleTap, this.highlightA = false, this.highlightB = false, this.lockedA = false, this.lockedB = false});
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +164,47 @@ class _CellBox extends StatelessWidget {
           boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 3, offset: Offset(0, 2))],
         ),
       ),
+      if (highlightA || highlightB)
+        Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: highlightA && highlightB
+                  ? Colors.white
+                  : (highlightA ? const Color(0xFFFFC107) : const Color(0xFF03A9F4)),
+              width: 3,
+            ),
+          ),
+        ),
       if (def.char != null) label,
+      if (highlightA || highlightB)
+        Positioned(
+          right: 4,
+          top: 4,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: highlightA && highlightB
+                  ? Colors.white70
+                  : (highlightA ? const Color(0xFFFFD54F) : const Color(0xFF40C4FF)),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              () {
+                final base = highlightA && highlightB ? 'A/B' : (highlightA ? 'A' : 'B');
+                final isLocked = (highlightA && lockedA) || (highlightB && lockedB);
+                return isLocked ? '$base\u{1F512}' : base; // add lock 🔒 if locked
+              }(),
+              style: const TextStyle(
+                color: Color(0xFF0D1117),
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
     ]);
 
     return Positioned(
@@ -164,6 +214,7 @@ class _CellBox extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: onTap,
+          onDoubleTap: onDoubleTap,
           child: Transform(
             alignment: Alignment.center,
             transform: Matrix4.identity()..translate(0.0, 0.0, z),
