@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/defs.dart';
+import '../models/algorithms.dart';
 
 class WorldController extends ChangeNotifier {
   double rotX = 18 * (3.1415926535 / 180.0);
@@ -19,6 +20,65 @@ class WorldController extends ChangeNotifier {
     if (selectedA != null) return selectedA!.kind;
     if (selectedB != null) return selectedB!.kind;
     return null;
+  }
+
+  /// Returns E/M/S slice indicators for a given cell based on current locks.
+  ///
+  /// Rules:
+  /// - Only applies to edge cells.
+  /// - If lockA is true, compute indicators treating every other edge cell as B,
+  ///   looking up Algorithms.edges[B][A_locked].
+  /// - If lockB is true, compute indicators treating every other edge cell as A,
+  ///   looking up Algorithms.edges[B_locked][A].
+  /// - If both locked, show indicators only for the specific counterpart (A<->B) pair.
+  /// - If no relevant algorithm exists, returns empty set.
+  Set<String> sliceIndicatorsFor(CellDef def) {
+    // Only edges have entries in Algorithms.edges
+    if (def.kind != 'edge') return const {};
+
+    // If nothing is locked, no indicators
+    final hasLockA = lockA && selectedA != null && selectedA!.kind == 'edge';
+    final hasLockB = lockB && selectedB != null && selectedB!.kind == 'edge';
+    if (!hasLockA && !hasLockB) return const {};
+
+    String? algo;
+
+    if (hasLockA && hasLockB) {
+      // Specific pair only: show on both locked cells
+      final aKey = selectedA!.key.toLowerCase();
+      final bKey = selectedB!.key.toLowerCase();
+      if (def == selectedA || def == selectedB) {
+        algo = Algorithms.edges[bKey]?[aKey];
+      } else {
+        return const {};
+      }
+    } else if (hasLockA) {
+      // A is locked; treat this def as B candidate
+      if (def == selectedA) return const {};
+      final aKey = selectedA!.key.toLowerCase();
+      final bKey = def.key.toLowerCase();
+      algo = Algorithms.edges[bKey]?[aKey];
+    } else if (hasLockB) {
+      // B is locked; treat this def as A candidate
+      if (def == selectedB) return const {};
+      final bKey = selectedB!.key.toLowerCase();
+      final aKey = def.key.toLowerCase();
+      algo = Algorithms.edges[bKey]?[aKey];
+    }
+
+    if (algo == null) return const {};
+
+    // Determine presence of slice moves E/M/S (any variants like E', E2 count)
+    final upper = algo.toUpperCase();
+    final hasE = upper.contains('E');
+    final hasM = upper.contains('M');
+    final hasS = upper.contains('S');
+
+    final out = <String>{};
+    if (hasE) out.add('E');
+    if (hasM) out.add('M');
+    if (hasS) out.add('S');
+    return out;
   }
 
   bool _isSelectable(CellDef def) {
