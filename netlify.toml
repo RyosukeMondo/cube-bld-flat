@@ -1,7 +1,7 @@
 [build]
   base = "cube_bld_mercator"
   publish = "build/web"
-  command = "bash netlify_build.sh"
+  command = "bash ../netlify_build.sh"
 
 [build.environment]
   # Choose the Flutter channel or version to use. 'stable' is recommended.

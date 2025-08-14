@@ -15,8 +15,8 @@ flutter --version
 flutter config --enable-web
 flutter doctor -v
 
-# Enter the Flutter app directory (also set via [build].base in netlify.toml)
-cd cube_bld_mercator
+# Netlify already sets working directory to the base (cube_bld_mercator)
+echo "Working directory: $(pwd)"
 
 flutter pub get
 # If deploying under a sub-path, set: --base-href "/your-subpath/"
