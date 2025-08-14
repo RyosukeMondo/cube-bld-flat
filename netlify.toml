@@ -1,0 +1,10 @@
+[build]
+  base = "cube_bld_mercator"
+  publish = "build/web"
+  command = "bash netlify_build.sh"
+
+[build.environment]
+  # Choose the Flutter channel or version to use. 'stable' is recommended.
+  FLUTTER_VERSION = "stable"
+  # Cache location for pub to speed up subsequent builds
+  PUB_CACHE = "/opt/buildhome/.pub-cache"
